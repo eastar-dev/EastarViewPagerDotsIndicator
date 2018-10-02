@@ -3,6 +3,7 @@ package android.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.support.annotation.DrawableRes;
@@ -14,14 +15,16 @@ import android.util.TypedValue;
 import com.eastandroid.smartc.viewpagerdotsindicator.R;
 
 public class DotIndicator extends View {
-    private int align;
+    private int gravity;
     private int mCurrent;
 
     private int dotSpacing;
     private Drawable dot;
     private int dotCount;
     private int mW;
+    private int mH;
     private int startX;
+    private int centerY;
 
 
     public DotIndicator(Context context) {
@@ -32,14 +35,14 @@ public class DotIndicator extends View {
         super(context, attrs);
         dotSpacing = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, context.getResources().getDisplayMetrics()); // 5dp
         dotCount = 2;
-        align = 0;//0:left,1:center,2:right
+        gravity = 0;//android.view.Gravity
 
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.DotIndicator);
             dotSpacing = (int) a.getDimension(R.styleable.DotIndicator_dotSpacing, dotSpacing);
             dotCount = a.getInteger(R.styleable.DotIndicator_dotCount, dotCount);
             dot = a.getDrawable(R.styleable.DotIndicator_dot);
-            align = a.getInteger(R.styleable.DotIndicator_align, align);
+            gravity = a.getInteger(R.styleable.DotIndicator_gravity, gravity);
             a.recycle();
         }
 
@@ -72,6 +75,7 @@ public class DotIndicator extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mW = w;
+        mH = h;
         updateUI();
         invalidate();
     }
@@ -80,31 +84,34 @@ public class DotIndicator extends View {
         int count = dotCount;
 
         int dots_width;
+        int height = mH / 2;
         if (dot instanceof StateListDrawable) {
             dot.setState(state_selected);
             int state_selected_width = dot.getIntrinsicWidth();
+            int state_selected_height = dot.getIntrinsicHeight();
 //            Log.e("t", "" + state_selected_width);
 
             dot.setState(state_normal);
             int state_normal_width = dot.getIntrinsicWidth();
+            int state_normal_height = dot.getIntrinsicHeight();
 //            Log.e("t", "" + state_normal_width);
             dots_width = state_selected_width + state_normal_width * (count - 1);
+
+            height = Math.max(state_selected_height, state_normal_height);
 //            Log.e("t", "" + dots_width);
         } else {
             dots_width = dot.getIntrinsicWidth() * count;
+            height = dot.getIntrinsicHeight();
         }
+
+
         final int space_width = (count - 1) * dotSpacing;
         final int width = dots_width + space_width;
+        final Rect outRect = new Rect();
+        Gravity.apply(gravity, width, height, new Rect(0, 0, mW, mH), outRect);
 
-        switch (align) {
-            default:
-            case 0://left
-                startX = 0;
-            case 1://center
-                startX = mW / 2 - width / 2;
-            case 2://right
-                startX = mW - width;
-        }
+        startX = outRect.left;
+        centerY = outRect.centerY();
     }
 
     private static final int[] state_selected = new int[]{android.R.attr.state_selected};
@@ -122,8 +129,10 @@ public class DotIndicator extends View {
                 else
                     dot.setState(state_normal);
             }
+            int w = dot.getIntrinsicWidth();
+            int h = dot.getIntrinsicHeight();
 
-            dot.setBounds(left, 0, left + dot.getIntrinsicWidth(), dot.getIntrinsicHeight());
+            dot.setBounds(left, centerY - h / 2, left + w, centerY - h / 2 + h);
             dot.draw(canvas);
             left += dot.getIntrinsicWidth() + dotSpacing;
         }
