@@ -68,6 +68,21 @@ public class DotIndicator extends View {
         this.gravity = gravity;
     }
 
+    public void setCurrentPosition(int position) {
+        mCurrent = position;
+        invalidate();
+    }
+
+    public void setupWithViewPager(ViewPager pager) {
+        setCount(pager.getAdapter().getCount());
+        pager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                setCurrentPosition(position % dotCount);
+            }
+        });
+    }
+
     public void setDrawable(@DrawableRes int dot) {
         this.dot = ContextCompat.getDrawable(getContext(), dot);
         updateUI();
@@ -79,6 +94,7 @@ public class DotIndicator extends View {
         updateUI();
         invalidate();
     }
+
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -147,19 +163,5 @@ public class DotIndicator extends View {
         }
     }
 
-    public void setCurrentPosition(int position) {
-        mCurrent = position;
-        invalidate();
-    }
-
-    public void setupWithViewPager(ViewPager pager) {
-        setCount(pager.getAdapter().getCount());
-        pager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                setCurrentPosition(position % dotCount);
-            }
-        });
-    }
 
 }

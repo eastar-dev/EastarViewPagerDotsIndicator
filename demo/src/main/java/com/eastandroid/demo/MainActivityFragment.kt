@@ -33,6 +33,8 @@ class MainActivityFragment : Fragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .distinctUntilChanged<Any> { text -> Integer.parseInt(text.toString()) }
                 .subscribe { text -> indicator.setCount(Integer.parseInt(text.toString())) }
+
+        indicator.setCount(3)
     }
 
     class DAdapter : PagerAdapter() {
