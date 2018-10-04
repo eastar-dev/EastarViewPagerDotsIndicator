@@ -36,6 +36,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:background="#50f0"
+        android:selectAllOnFocus="true"
         android:gravity="end|center_horizontal"
         android:hint="set indicator count"
         android:inputType="numberDecimal"

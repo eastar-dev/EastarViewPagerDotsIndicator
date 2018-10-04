@@ -52,8 +52,6 @@ public class DotIndicator extends View {
         updateUI();
     }
 
-//    private int mCount;
-
     public void setCount(int count) {
         dotCount = count;
         updateUI();
@@ -66,8 +64,19 @@ public class DotIndicator extends View {
         invalidate();
     }
 
+    public void setGravity(int gravity) {
+        this.gravity = gravity;
+    }
+
     public void setDrawable(@DrawableRes int dot) {
         this.dot = ContextCompat.getDrawable(getContext(), dot);
+        updateUI();
+        invalidate();
+    }
+
+    public void setDrawable(Drawable dot) {
+        this.dot = dot;
+        updateUI();
         invalidate();
     }
 
@@ -145,13 +154,12 @@ public class DotIndicator extends View {
 
     public void setupWithViewPager(ViewPager pager) {
         setCount(pager.getAdapter().getCount());
-        pager.addOnPageChangeListener(onPageChangeListener);
+        pager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                setCurrentPosition(position % dotCount);
+            }
+        });
     }
 
-    private ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
-        @Override
-        public void onPageSelected(int position) {
-            setCurrentPosition(position % dotCount);
-        }
-    };
 }
