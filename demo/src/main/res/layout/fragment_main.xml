@@ -26,7 +26,8 @@
         app:gravity="right|top"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:background="#5f00" />
+        tools:background="#5f00"
+        tools:ignore="MissingPrefix" />
 
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/indicator_count"
