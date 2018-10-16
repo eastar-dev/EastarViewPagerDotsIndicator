@@ -74,12 +74,13 @@ public class DotIndicator extends View {
     }
 
     public void setupWithViewPager(ViewPager pager) {
-        if(dotCount <= 0)
+        if (dotCount <= 0)
             setCount(pager.getAdapter().getCount());
         pager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                setCurrentPosition(position % dotCount);
+                if (dotCount > 0)
+                    setCurrentPosition(position % dotCount);
             }
         });
     }
