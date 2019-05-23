@@ -1,18 +1,20 @@
 package android.view;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
+import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 
-import com.eastandroid.smartc.viewpagerdotsindicator.R;
+import dev.eastar.viewpagerdotsindicator.R;
 
 public class DotIndicator extends View {
     private int gravity;
@@ -26,11 +28,11 @@ public class DotIndicator extends View {
     private int startX;
     private int centerY;
 
-
     public DotIndicator(Context context) {
         this(context, null);
     }
 
+    @TargetApi(Build.VERSION_CODES.CUPCAKE)
     public DotIndicator(Context context, AttributeSet attrs) {
         super(context, attrs);
         dotSpacing = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, context.getResources().getDisplayMetrics()); // 5dp
@@ -97,7 +99,6 @@ public class DotIndicator extends View {
         invalidate();
     }
 
-
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -131,7 +132,6 @@ public class DotIndicator extends View {
             height = dot.getIntrinsicHeight();
         }
 
-
         final int space_width = (count - 1) * dotSpacing;
         final int width = dots_width + space_width;
         final Rect outRect = new Rect();
@@ -164,6 +164,5 @@ public class DotIndicator extends View {
             left += dot.getIntrinsicWidth() + dotSpacing;
         }
     }
-
 
 }
