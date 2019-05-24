@@ -1,6 +1,6 @@
-[![Release](https://jitpack.io/v/djrain/viewpagerdotsindicator.svg)](https://jitpack.io/#djrain/viewpagerdotsindicator)
+[![Release](https://jitpack.io/v/djrain/EastarViewPagerDotsIndicator.svg)](https://jitpack.io/#djrain/EastarViewPagerDotsIndicator)
 
-# What is ViewPager dots Indicator(viewpagerdotsindicator)?
+# What is ViewPager dots Indicator(EastarViewPagerDotsIndicator)?
 
 ViewPager에서 현재 위치가 어디 인지를 알려 주는 역할을 하는 UI입니다.<br/>
 이 라이브러리는 Indicator를 표시 하기 위한 심플한 라이브러리 입니다.<br/>
@@ -8,7 +8,7 @@ ViewPager에서 현재 위치가 어디 인지를 알려 주는 역할을 하는
 
 <br/><br/>
 # Demo
-![Screenshot](https://github.com/djrain/viewpagerdotsindicator/blob/readme/demo.gif?raw=true)    
+![Screenshot](https://github.com/djrain/EastarViewPagerDotsIndicator/blob/readme/demo.gif?raw=true)    
            
 
 
@@ -34,9 +34,10 @@ ViewPager에서 현재 위치가 어디 인지를 알려 주는 역할을 하는
 ```javascript
 
 	dependencies {
-	        implementation 'com.github.djrain:viewpagerdotsindicator:1.0.0'
+	        implementation 'com.github.djrain:EastarViewPagerDotsIndicator:1.0.3'
 	}
-
+  
+	
 
 ```
 
