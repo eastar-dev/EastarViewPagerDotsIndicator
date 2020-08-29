@@ -6,7 +6,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 group = 'com.github.eastar-dev'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
     defaultConfig {
