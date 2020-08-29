@@ -48,6 +48,8 @@ class DotIndicator @JvmOverloads constructor(context: Context, attrs: AttributeS
     private var mH = 0
     private var startX = 0
     private var centerY = 0
+    private var suggestedWidth: Int = 0
+    private var suggestedHeight: Int = 0
 
     init {
         if (attrs != null) {
@@ -65,27 +67,27 @@ class DotIndicator @JvmOverloads constructor(context: Context, attrs: AttributeS
     }
 
     private fun updateUI() {
-        (dot as? StateListDrawable)?.let { dot ->
-            dot.state = state_selected
-            val stateSelectedWidth = dot.intrinsicWidth
-            val stateSelectedHeight = dot.intrinsicHeight
+        if (dot !is StateListDrawable)
+            return
 
-            dot.state = state_normal
-            val stateNormalWidth = dot.intrinsicWidth
-            val stateNormalHeight = dot.intrinsicHeight
+        val dot = dot!!
+        dot.state = state_selected
+        val stateSelectedWidth = dot.intrinsicWidth
+        val stateSelectedHeight = dot.intrinsicHeight
 
-            suggestedWidth = stateSelectedWidth + stateNormalWidth * (dotCount - 1) + dotSpacing * (dotCount - 1)
-            suggestedHeight = max(stateSelectedHeight, stateNormalHeight)
+        dot.state = state_normal
+        val stateNormalWidth = dot.intrinsicWidth
+        val stateNormalHeight = dot.intrinsicHeight
 
-            val outRect = Rect()
-            Gravity.apply(gravity, width, height, Rect(0, 0, mW, mH), outRect)
-            startX = outRect.left
-            centerY = outRect.centerY()
-        }
+        suggestedWidth = stateSelectedWidth + stateNormalWidth * (dotCount - 1) + dotSpacing * (dotCount - 1)
+        suggestedHeight = max(stateSelectedHeight, stateNormalHeight)
+
+        val outRect = Rect()
+        Gravity.apply(gravity, width, height, Rect(0, 0, mW, mH), outRect)
+        startX = outRect.left
+        centerY = outRect.centerY()
     }
 
-    var suggestedWidth: Int = 0
-    var suggestedHeight: Int = 0
 
     override fun getSuggestedMinimumHeight(): Int = if (dot == null) minimumHeight else max(minimumHeight, suggestedHeight)
     override fun getSuggestedMinimumWidth(): Int = if (dot == null) minimumWidth else max(minimumWidth, suggestedWidth)
@@ -131,6 +133,8 @@ class DotIndicator @JvmOverloads constructor(context: Context, attrs: AttributeS
 
     fun setGravity(gravity: Int) {
         this.gravity = gravity
+        updateUI()
+        invalidate()
     }
 
     fun setCurrentPosition(position: Int) {
@@ -141,6 +145,7 @@ class DotIndicator @JvmOverloads constructor(context: Context, attrs: AttributeS
     fun setupWithViewPager(pager: ViewPager) {
         if (dotCount <= 0)
             setCount(pager.adapter!!.count)
+
         pager.addOnPageChangeListener(object : SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 if (dotCount > 0) setCurrentPosition(position % dotCount)
@@ -151,6 +156,7 @@ class DotIndicator @JvmOverloads constructor(context: Context, attrs: AttributeS
     fun setupWithViewPager(pager: ViewPager2) {
         if (dotCount <= 0)
             setCount(pager.adapter!!.itemCount)
+
         pager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 if (dotCount > 0) setCurrentPosition(position % dotCount)
@@ -200,6 +206,4 @@ class DotIndicator @JvmOverloads constructor(context: Context, attrs: AttributeS
         private val state_selected = intArrayOf(R.attr.state_selected)
         private val state_normal = intArrayOf(R.attr.state_empty)
     }
-
-
 }
