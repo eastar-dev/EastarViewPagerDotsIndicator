@@ -19,15 +19,16 @@ package com.eastandroid.demo
 
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.view.PagerAdapter
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.PagerAdapter
 import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_main.*
 
 /**
@@ -35,8 +36,13 @@ import kotlinx.android.synthetic.main.fragment_main.*
  */
 class MainActivityFragment : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    private var dispose: Disposable? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
@@ -45,12 +51,18 @@ class MainActivityFragment : Fragment() {
         pager.adapter = DAdapter()
         indicator.setupWithViewPager(pager)
         indicator_count.setText("${(pager.adapter as DAdapter).count}")
-        var d = RxTextView.textChanges(indicator_count)
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged<Any> { text -> Integer.parseInt(text.toString()) }
-                .subscribe { text -> indicator.setCount(Integer.parseInt(text.toString())) }
+        dispose = RxTextView.textChanges(indicator_count)
+            .map { it.toString().toIntOrNull() ?: 0 }
+            .distinctUntilChanged()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { indicator.setCount(it) }
 
         indicator.setCount(3)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        dispose?.takeUnless { it.isDisposed }?.dispose()
     }
 
     class DAdapter : PagerAdapter() {
@@ -58,7 +70,12 @@ class MainActivityFragment : Fragment() {
             var v = TextView(container.context)
             v.gravity = Gravity.CENTER
             v.text = "$position"
-            v.setBackgroundColor(Color.HSVToColor(0x55, arrayOf(360F * (position.toFloat() / count.toFloat()), 1F, 1F).toFloatArray()))
+            v.setBackgroundColor(
+                Color.HSVToColor(
+                    0x55,
+                    arrayOf(360F * (position.toFloat() / count.toFloat()), 1F, 1F).toFloatArray()
+                )
+            )
             container.addView(v)
             return v
         }
