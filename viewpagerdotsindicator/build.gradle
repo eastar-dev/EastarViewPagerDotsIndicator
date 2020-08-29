@@ -1,35 +1,32 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
 apply plugin: 'com.github.dcendents.android-maven'
-group = 'com.github.djrain'
-apply plugin: 'maven'
-
-//uploadArchives {
-//    repositories {
-//        mavenDeployer {
-//            repository(url: "http://localhost:8081/repository/maven-releases/") {
-//                authentication(userName: "admin", password: "admin123")
-//                pom.groupId = "com.eastandroid.smartc"
-//                pom.artifactId = "viewpagerdotsindicator"
-//                pom.version = '1.0.0'
-//            }
-//        }
-//    }
-//}
-
+group = 'com.github.eastar-dev'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
+    buildToolsVersion "29.0.3"
+
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 29
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+}
 
+// build a jar with source files
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
 }
 
 dependencies {
-    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
 }

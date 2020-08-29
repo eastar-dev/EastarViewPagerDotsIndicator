@@ -25,11 +25,13 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
-import android.support.annotation.DrawableRes;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+
+import androidx.annotation.DrawableRes;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import dev.eastar.viewpagerdotsindicator.R;
 
@@ -96,6 +98,18 @@ public class DotIndicator extends View {
         if (dotCount <= 0)
             setCount(pager.getAdapter().getCount());
         pager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                if (dotCount > 0)
+                    setCurrentPosition(position % dotCount);
+            }
+        });
+    }
+
+    public void setupWithViewPager(ViewPager2 pager) {
+        if (dotCount <= 0)
+            setCount(pager.getAdapter().getItemCount());
+        pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 if (dotCount > 0)
